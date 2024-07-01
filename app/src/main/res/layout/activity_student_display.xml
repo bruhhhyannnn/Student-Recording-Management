@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".StudentDisplayActivity">
+
+    <!-- HEADER -->
+    <TextView
+        android:id="@+id/header_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Student Recording Management System"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:padding="30dp"/>
+
+    <!-- MAIN CONTENT -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/student_information"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <LinearLayout
+            android:id="@+id/functions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/edit_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:src="@drawable/icon_edit" />
+            <ImageView
+                android:id="@+id/delete_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:src="@drawable/icon_delete" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/student_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="Student Number: "
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/functions" />
+
+        <TextView
+            android:id="@+id/student_number_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="21-020131"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/student_number"
+            app:layout_constraintTop_toBottomOf="@+id/functions" />
+
+        <TextView
+            android:id="@+id/full_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="Full Name: "
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/student_number" />
+
+        <TextView
+            android:id="@+id/full_name_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="Bryan Jersu sMangapit"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/full_name"
+            app:layout_constraintTop_toBottomOf="@+id/student_number_value" />
+
+        <TextView
+            android:id="@+id/age"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:padding="10dp"
+            android:text="Age: "
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/full_name" />
+
+        <TextView
+            android:id="@+id/age_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:padding="10dp"
+            android:text="21"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/age"
+            app:layout_constraintTop_toBottomOf="@+id/full_name_value" />
+
+        <TextView
+            android:id="@+id/birthday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="Birthday: "
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/age" />
+
+        <TextView
+            android:id="@+id/birthday_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="05.23.2003"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/birthday"
+            app:layout_constraintTop_toBottomOf="@+id/age_value" />
+
+        <TextView
+            android:id="@+id/full_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="Full Address: "
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/birthday" />
+
+        <TextView
+            android:id="@+id/full_address_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="#10N LAcub, Batac City, Ilocos Norte"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/full_address"
+            app:layout_constraintTop_toBottomOf="@+id/birthday_value" />
+
+        <TextView
+            android:id="@+id/phone_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="Phone Number: "
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/full_address_value" />
+
+        <TextView
+            android:id="@+id/phone_number_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="09182178716"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/phone_number"
+            app:layout_constraintTop_toBottomOf="@+id/full_address" />
+
+        <TextView
+            android:id="@+id/email_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="Email Address: "
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/phone_number" />
+
+        <TextView
+            android:id="@+id/email_address_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="bryanjersus@gmail.com"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/email_address"
+            app:layout_constraintTop_toBottomOf="@+id/phone_number_value" />
+
+        <TextView
+            android:id="@+id/mother_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="Mother Name: "
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/email_address" />
+
+        <TextView
+            android:id="@+id/mother_name_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="Belen Mangapit"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/mother_name"
+            app:layout_constraintTop_toBottomOf="@+id/email_address_value" />
+
+        <TextView
+            android:id="@+id/father_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="Father Name: "
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/mother_name" />
+
+        <TextView
+            android:id="@+id/father_name_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="Florante Mangapit"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/father_name"
+            app:layout_constraintTop_toBottomOf="@+id/mother_name_value" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="30dp"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_gravity="center"/>
+
+    <!-- FOOTER -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp">
+
+        <TextView
+            android:id="@+id/footer_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/cardview_shadow_start_color"
+            android:padding="20dp"
+            android:text="@string/copyright_text"
+            android:textAlignment="center"
+            android:textColor="@color/cardview_dark_background" />
+    </RelativeLayout>
+
+</LinearLayout>
+

@@ -32,6 +32,12 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@color/cardview_shadow_start_color"
             android:text="Search"/>
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="30dp"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_marginRight="16dp"/>
     </LinearLayout>
 
 </LinearLayout>

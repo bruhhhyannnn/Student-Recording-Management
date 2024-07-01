@@ -1,10 +1,12 @@
 package com.example.student_recording_management
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -13,6 +15,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.student_recording_management.adapter.StudentAdapter
 import com.example.student_recording_management.data_model.StudentModel
 import com.example.student_recording_management.databinding.ActivityMainBinding
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.firestore
+import com.google.firebase.firestore.toObject
 
 class MainActivity : AppCompatActivity() {
 
@@ -56,51 +61,6 @@ class MainActivity : AppCompatActivity() {
             val motherName = view.findViewById<EditText>(R.id.mother_name).text.toString()
             val fatherName = view.findViewById<EditText>(R.id.father_name).text.toString()
 
-            if (studentNumber.isEmpty()) {
-                view.findViewById<EditText>(R.id.student_number).error = "Student Number is required"
-                return@setOnClickListener
-            }
-            else if (fullName.isEmpty()) {
-                view.findViewById<EditText>(R.id.full_name).error = "Full Name is required"
-                return@setOnClickListener
-            }
-            else if (age.isEmpty()) {
-                view.findViewById<EditText>(R.id.age).error = "Age is required"
-                return@setOnClickListener
-            }
-            else if (birthday.isEmpty()) {
-                view.findViewById<EditText>(R.id.birthday).error = "Birthday is required"
-                return@setOnClickListener
-            }
-            else if (barangayName.isEmpty()) {
-                view.findViewById<EditText>(R.id.barangay_name).error = "Barangay Name is required"
-                return@setOnClickListener
-            }
-            else if (cityName.isEmpty()) {
-                view.findViewById<EditText>(R.id.city_name).error = "City Name is required"
-                return@setOnClickListener
-            }
-            else if (provinceName.isEmpty()) {
-                view.findViewById<EditText>(R.id.province_name).error = "Province Name is required"
-                return@setOnClickListener
-            }
-            else if (phoneNumber.isEmpty()) {
-                view.findViewById<EditText>(R.id.phone_number).error = "Phone Number is required"
-                return@setOnClickListener
-            }
-            else if (emailAddress.isEmpty()) {
-                view.findViewById<EditText>(R.id.email_address).error = "Email Address is required"
-                return@setOnClickListener
-            }
-            else if (motherName.isEmpty()) {
-                view.findViewById<EditText>(R.id.mother_name).error = "Mother Name is required"
-                return@setOnClickListener
-            }
-            else if (fatherName.isEmpty()) {
-                view.findViewById<EditText>(R.id.father_name).error = "Father Name is required"
-                return@setOnClickListener
-            }
-
             val student = hashMapOf(
                 "studentNumber" to studentNumber,
                 "fullName" to fullName,
@@ -115,16 +75,33 @@ class MainActivity : AppCompatActivity() {
                 "fatherName" to fatherName
             )
 
-            addStudentDataToFirebase(student)
+            addStudentDataToFirebase(student, view, dialog)
         }
         view.findViewById<Button>(R.id.cancel_button).setOnClickListener {
             dialog.dismiss()
         }
     }
 
-    private fun addStudentDataToFirebase(student: HashMap<String, String>) {
+    private fun addStudentDataToFirebase(student: HashMap<String, String>, view: View, dialog: AlertDialog) {
+        view.findViewById<ProgressBar>(R.id.progress_bar).visibility = View.VISIBLE
+        view.findViewById<Button>(R.id.add_button).visibility = View.GONE
         val studentNumber = student["studentNumber"]
-        Toast.makeText(this, "Added $studentNumber", Toast.LENGTH_SHORT).show()
+        Firebase.firestore
+            .collection("students")
+            .add(student)
+            .addOnSuccessListener {
+                Firebase.firestore
+                    .collection("students")
+                    .document(it.id)
+                    .update("documentID", it.id)
+                    .addOnSuccessListener {
+                        Toast.makeText(this, "Added $studentNumber", Toast.LENGTH_SHORT)
+                            .show()
+                        view.findViewById<ProgressBar>(R.id.progress_bar).visibility = View.GONE
+                        view.findViewById<Button>(R.id.add_button).visibility = View.VISIBLE
+                        dialog.dismiss()
+                    }
+            }
     }
 
     private fun getStudentNumber() {
@@ -138,15 +115,40 @@ class MainActivity : AppCompatActivity() {
 
         view.findViewById<Button>(R.id.search_button).setOnClickListener {
             val studentNumber = view.findViewById<EditText>(R.id.student_number).text.toString()
-            searchStudentNumFromFirebase(studentNumber)
+            searchStudentNumberFromFirebase(studentNumber, view)
         }
         view.findViewById<Button>(R.id.cancel_button).setOnClickListener {
             dialog.dismiss()
         }
     }
 
-    private fun searchStudentNumFromFirebase(studentNumber: String) {
-        Toast.makeText(this, "Found $studentNumber", Toast.LENGTH_SHORT).show()
+    private fun searchStudentNumberFromFirebase(studentNumber: String, view: View) {
+        var studentFound = false
+        view.findViewById<ProgressBar>(R.id.progress_bar).visibility = View.VISIBLE
+        view.findViewById<Button>(R.id.search_button).visibility = View.GONE
+        Firebase.firestore
+            .collection("students")
+            .get()
+            .addOnSuccessListener {
+                if (!it.isEmpty && it != null) {
+                    for (document in it) {
+                        if (document.getString("studentNumber") == studentNumber) {
+                            val student = document.toObject(StudentModel::class.java)
+                            Toast.makeText(this, "Found ${student.studentNumber}", Toast.LENGTH_SHORT).show()
+                            // pass to new activity
+
+                            view.findViewById<ProgressBar>(R.id.progress_bar).visibility = View.VISIBLE
+                            view.findViewById<Button>(R.id.search_button).visibility = View.GONE
+                            studentFound = true
+                            break
+                        }
+                    }
+                    if (!studentFound) {
+                        view.findViewById<EditText>(R.id.student_number).error = "Student Number Not Found"
+                        Toast.makeText(this, "Student Not Found", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
     }
 
     private fun displayStudent() {
@@ -155,7 +157,8 @@ class MainActivity : AppCompatActivity() {
         val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(this)
         val studentList = ArrayList<StudentModel>()
-        recyclerView.adapter = StudentAdapter(studentList)
+        val adapter = StudentAdapter(studentList)
+        recyclerView.adapter = adapter
 
         val dialog = AlertDialog.Builder(this)
             .setView(view)
@@ -163,21 +166,69 @@ class MainActivity : AppCompatActivity() {
             .create()
         dialog.show()
 
-        val tempData = mapOf(
-            "21-020131" to "John Doe",
-            "21-020132" to "Jane Doe",
-            "21-020133" to "Michael Doe",
-            "21-020134" to "Emily Doe",
-            "21-020135" to "David Doe",
-            "21-020136" to "John Smith",
-            "21-020137" to "Jane Smith",
-            "21-020138" to "Michael Smith",
-            "21-020139" to "Emily Smith",
-            "21-020140" to "David Smith",
-        )
-        tempData.forEach {
-            studentList.add(StudentModel(it.key, it.value))
-            recyclerView.adapter?.notifyDataSetChanged()
-        }
+        getStudentsFromFirebase(studentList, view)
+    }
+
+    private fun getStudentsFromFirebase(studentList: ArrayList<StudentModel>, view: View) {
+        view.findViewById<ProgressBar>(R.id.progress_bar).visibility = View.VISIBLE
+        view.findViewById<RecyclerView>(R.id.recycler_view).visibility = View.GONE
+        Firebase.firestore
+            .collection("students")
+            .get()
+            .addOnSuccessListener {
+                if (!it.isEmpty && it != null) {
+                    for (document in it) {
+                        val student = document.toObject(StudentModel::class.java)
+                        studentList.add(student)
+                    }
+                    view.findViewById<ProgressBar>(R.id.progress_bar).visibility = View.GONE
+                    view.findViewById<RecyclerView>(R.id.recycler_view).visibility = View.VISIBLE
+                }
+            }
     }
 }
+
+//            if (studentNumber.isEmpty()) {
+//                view.findViewById<EditText>(R.id.student_number).error = "Student Number is required"
+//                return@setOnClickListener
+//            }
+//            else if (fullName.isEmpty()) {
+//                view.findViewById<EditText>(R.id.full_name).error = "Full Name is required"
+//                return@setOnClickListener
+//            }
+//            else if (age.isEmpty()) {
+//                view.findViewById<EditText>(R.id.age).error = "Age is required"
+//                return@setOnClickListener
+//            }
+//            else if (birthday.isEmpty()) {
+//                view.findViewById<EditText>(R.id.birthday).error = "Birthday is required"
+//                return@setOnClickListener
+//            }
+//            else if (barangayName.isEmpty()) {
+//                view.findViewById<EditText>(R.id.barangay_name).error = "Barangay Name is required"
+//                return@setOnClickListener
+//            }
+//            else if (cityName.isEmpty()) {
+//                view.findViewById<EditText>(R.id.city_name).error = "City Name is required"
+//                return@setOnClickListener
+//            }
+//            else if (provinceName.isEmpty()) {
+//                view.findViewById<EditText>(R.id.province_name).error = "Province Name is required"
+//                return@setOnClickListener
+//            }
+//            else if (phoneNumber.isEmpty()) {
+//                view.findViewById<EditText>(R.id.phone_number).error = "Phone Number is required"
+//                return@setOnClickListener
+//            }
+//            else if (emailAddress.isEmpty()) {
+//                view.findViewById<EditText>(R.id.email_address).error = "Email Address is required"
+//                return@setOnClickListener
+//            }
+//            else if (motherName.isEmpty()) {
+//                view.findViewById<EditText>(R.id.mother_name).error = "Mother Name is required"
+//                return@setOnClickListener
+//            }
+//            else if (fatherName.isEmpty()) {
+//                view.findViewById<EditText>(R.id.father_name).error = "Father Name is required"
+//                return@setOnClickListener
+//            }

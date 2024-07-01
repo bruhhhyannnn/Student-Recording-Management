@@ -1,13 +1,14 @@
 package com.example.student_recording_management.adapter
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RadioButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.student_recording_management.R
+import com.example.student_recording_management.StudentDisplayActivity
 import com.example.student_recording_management.data_model.StudentModel
 
 class StudentAdapter(
@@ -29,7 +30,11 @@ class StudentAdapter(
         holder.fullName.text = student.fullName
 
         holder.itemView.setOnClickListener {
-            Toast.makeText(holder.itemView.context, "Student Number: ${student.studentNumber}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(holder.itemView.context, "Document ID: ${student.documentID}", Toast.LENGTH_SHORT).show()
+            val intent = Intent(holder.itemView.context, StudentDisplayActivity::class.java).apply {
+                putExtra("documentID", student.documentID)
+            }
+            holder.itemView.context.startActivity(intent)
         }
     }
 
