@@ -1,5 +1,6 @@
 package com.example.student_recording_management
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -134,9 +135,10 @@ class MainActivity : AppCompatActivity() {
                     for (document in it) {
                         if (document.getString("studentNumber") == studentNumber) {
                             val student = document.toObject(StudentModel::class.java)
-                            Toast.makeText(this, "Found ${student.studentNumber}", Toast.LENGTH_SHORT).show()
-                            // pass to new activity
-
+                            val intent = Intent(baseContext, StudentDisplayActivity::class.java).apply {
+                                putExtra("documentID", student.documentID)
+                            }
+                            startActivity(intent)
                             view.findViewById<ProgressBar>(R.id.progress_bar).visibility = View.VISIBLE
                             view.findViewById<Button>(R.id.search_button).visibility = View.GONE
                             studentFound = true

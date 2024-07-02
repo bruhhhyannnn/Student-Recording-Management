@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -119,7 +120,7 @@ class StudentDisplayActivity : AppCompatActivity() {
                 "fatherName" to fatherName
             )
 
-            updateDataToFirebase(student, dialog)
+            updateDataToFirebase(student, view, dialog)
         }
         view.findViewById<Button>(R.id.cancel_button).setOnClickListener {
             dialog.dismiss()
@@ -140,13 +141,17 @@ class StudentDisplayActivity : AppCompatActivity() {
         view.findViewById<EditText>(R.id.father_name).setText(student.fatherName)
     }
 
-    private fun updateDataToFirebase(student: Map<String, String>, dialog: AlertDialog) {
+    private fun updateDataToFirebase(student: Map<String, String>, view: View, dialog: AlertDialog) {
+        view.findViewById<Button>(R.id.add_button).visibility = View.GONE
+        view.findViewById<ProgressBar>(R.id.progress_bar).visibility = View.VISIBLE
         Firebase.firestore
             .collection("students")
             .document(documentID)
             .update(student)
             .addOnSuccessListener {
                 Toast.makeText(this, "Student Updated", Toast.LENGTH_SHORT).show()
+                view.findViewById<Button>(R.id.add_button).visibility = View.VISIBLE
+                view.findViewById<ProgressBar>(R.id.progress_bar).visibility = View.GONE
                 dialog.dismiss()
                 getStudentDataFromFirebase()
             }
