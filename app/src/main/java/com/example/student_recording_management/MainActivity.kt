@@ -29,6 +29,8 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        bindTotalStudent()
+
         binding.addButton.setOnClickListener {
             getStudentInformation()
         }
@@ -38,6 +40,27 @@ class MainActivity : AppCompatActivity() {
         binding.displayButton.setOnClickListener {
             displayStudent()
         }
+    }
+
+    private fun setInProgress(inProgress: Boolean) {
+        if (inProgress) {
+            binding.progressBar.visibility = View.VISIBLE
+            binding.totalStudents.visibility = View.GONE
+        } else {
+            binding.progressBar.visibility = View.GONE
+            binding.totalStudents.visibility = View.VISIBLE
+        }
+    }
+
+    private fun bindTotalStudent() {
+        setInProgress(true)
+        Firebase.firestore
+            .collection("students")
+            .get()
+            .addOnSuccessListener {
+                binding.totalStudents.text = it.size().toString()
+                setInProgress(false)
+            }
     }
 
     private fun getStudentInformation() {
