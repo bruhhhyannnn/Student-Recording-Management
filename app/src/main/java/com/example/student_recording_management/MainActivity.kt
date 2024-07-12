@@ -58,7 +58,11 @@ class MainActivity : AppCompatActivity() {
             .collection("students")
             .get()
             .addOnSuccessListener {
-                binding.totalStudents.text = it.size().toString()
+                if (it.isEmpty) {
+                    binding.totalStudents.text = "0"
+                } else {
+                    binding.totalStudents.text = it.size().toString()
+                }
                 setInProgress(false)
             }
     }
