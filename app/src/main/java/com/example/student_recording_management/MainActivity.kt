@@ -13,7 +13,9 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.student_recording_management.adapter.SectionAdapter
 import com.example.student_recording_management.adapter.StudentAdapter
+import com.example.student_recording_management.data_model.SectionModel
 import com.example.student_recording_management.data_model.StudentModel
 import com.example.student_recording_management.databinding.ActivityMainBinding
 import com.google.firebase.Firebase
@@ -30,6 +32,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         bindTotalStudent()
+        bindSections()
 
         binding.addButton.setOnClickListener {
             getStudentInformation()
@@ -65,6 +68,29 @@ class MainActivity : AppCompatActivity() {
                 }
                 setInProgress(false)
             }
+    }
+
+    private fun bindSections() {
+        val sectionList = getSectionInformation()
+
+        val recyclerView = findViewById<RecyclerView>(R.id.sections_recycler_view)
+        recyclerView.adapter = SectionAdapter(sectionList)
+        recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+    }
+
+    private fun getSectionInformation(): ArrayList<SectionModel> {
+        val sectionList = ArrayList<SectionModel>()
+        sectionList.add(SectionModel("Section 1", "Section 1", 1))
+        sectionList.add(SectionModel("Section 2", "Section 2", 2))
+        sectionList.add(SectionModel("Section 3", "Section 3", 3))
+        sectionList.add(SectionModel("Section 4", "Section 4", 4))
+        sectionList.add(SectionModel("Section 5", "Section 5", 5))
+        sectionList.add(SectionModel("Section 6", "Section 6", 6))
+        sectionList.add(SectionModel("Section 7", "Section 7", 7))
+        sectionList.add(SectionModel("Section 8", "Section 8", 8))
+        sectionList.add(SectionModel("Section 9", "Section 9", 9))
+        sectionList.add(SectionModel("Section 10", "Section 10", 10))
+        return sectionList
     }
 
     private fun getStudentInformation() {
